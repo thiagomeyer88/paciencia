@@ -1,0 +1,91 @@
+*{
+    margin:0;
+    padding:0;
+}
+
+body{
+    background-color: seashell;
+}
+
+div.container{
+    background: linear-gradient(45deg,rgb(1, 216, 1),rgb(0, 68, 0));
+    border: 5px solid burlywood;
+    border-radius: 5px;
+    display: grid;
+    max-width: 1000px;
+    margin: 0 auto;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    grid-template-areas: "baralho carta-aberta nada naipe1 naipe2 naipe3 naipe4"
+                       "sequencia1  sequencia2 sequencia3 sequencia4 sequencia5 sequencia6 sequencia7";
+    padding: 80px 80px 150px;
+}
+
+div.container div{
+    margin-bottom: 50px;
+    background-color: red;
+    height: 170px;
+    width: 115px;
+    border: 5px solid black;
+}
+
+#baralho{
+    grid-area: baralho;
+}
+
+#carta-aberta{
+    grid-area: carta-aberta;
+}
+
+#naipe1{
+    grid-area: naipe1;
+}
+
+#naipe2{
+    grid-area: naipe2;
+}
+
+#naipe3{
+    grid-area: naipe3;
+}
+
+#naipe4{
+    grid-area: naipe4;
+}
+
+#sequencia1{
+    grid-area: sequencia1;
+}
+
+#sequencia2{
+    grid-area: sequencia2;
+}
+
+#sequencia3{
+    grid-area: sequencia3;
+}
+
+#sequencia4{
+    grid-area: sequencia4;
+}
+
+#sequencia5{
+    grid-area: sequencia5;
+}
+
+#sequencia6{
+    grid-area: sequencia6;
+}
+
+#sequencia7{
+    grid-area: sequencia7;
+}
+
+img{
+    width: 115px;
+    height: 170px;
+}
+
+.espaco,.carta-aberta{
+    position: relative;
+}
