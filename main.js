@@ -1,4 +1,6 @@
+//Desenvolvido por Thiago Meyer - 2020
 
+//Elementos HTML
 const espacos = document.querySelectorAll('.espaco');
 const figuraBaralho = document.querySelector('#baralho');
 const cartaAberta = document.querySelector('#carta-aberta');
@@ -13,34 +15,35 @@ const espacoNaipe1 = document.getElementById('naipe1');
 const espacoNaipe2 = document.getElementById('naipe2');
 const espacoNaipe3 = document.getElementById('naipe3');
 const espacoNaipe4 = document.getElementById('naipe4');
-let cartaSegurada;
-let vetorSaida;
-let vetorEntrada;
-let localSaida;
 
+//Variáveis Globais
+let cartaSegurada;
+let vetorSaida; //Vetor de onde saiu a carta
+let vetorEntrada; //Vetor pra onde vai a carta
+let localSaida; //Local Html de onde saiu a carta
+
+//Todos os lugares onde é possível soltar uma carta
 for(const espaco of espacos){
     espaco.addEventListener('dragover', dragOver);
     espaco.addEventListener('drop', dragDrop);
 }
 
+//Início do arrasto
 function dragStart(){
     cartaSegurada = this;
     vetorSaida  = deOndeArrastou(cartaSegurada.src);
     localSaida = cartaSegurada.parentElement;
-    console.log(localSaida);
 }
 
+//Durante o arrasto
 function dragOver(e){
     e.preventDefault();
 }
 
+//Soltar a carta
 function dragDrop(e){
-    if(this == espacoSeq1 || this == espacoSeq2 || this == espacoSeq3 || this == espacoSeq4 || this == espacoSeq5 || this == espacoSeq6 || this == espacoSeq7){
-        cartaSegurada.style.top = `${0 + (this.childElementCount * 30)}px`;
-    }
-    else{
-        cartaSegurada.style.top = 0;
-    }
+    let inserir = false;
+    //Verifica qual o vetor relacionado ao local onde a carta foi solta
     if(this == espacoSeq1){
         vetorEntrada = seq1;
     }
@@ -74,26 +77,66 @@ function dragDrop(e){
     else{
         vetorEntrada = naipe4;
     }
-    this.append(cartaSegurada);
-    e.preventDefault();
-    
-    vetorEntrada.push(vetorSaida.pop());
 
-    if(localSaida == espacoSeq1 || localSaida == espacoSeq2 || localSaida == espacoSeq3 || localSaida == espacoSeq4 || localSaida == espacoSeq5 || localSaida == espacoSeq6 || localSaida == espacoSeq7){
-        let quantosFilhos = localSaida.childElementCount;
-        if(quantosFilhos > 0){
-            localSaida.removeChild(localSaida.childNodes[quantosFilhos - 1]); 
-            novaCarta(`imagens/${vetorSaida[vetorSaida.length-1].imagem}`,localSaida,30*(quantosFilhos - 1),true);
+    //Inserção de carta em fileiras de baixo
+    if(this == espacoSeq1 || this == espacoSeq2 || this == espacoSeq3 || this == espacoSeq4 || this == espacoSeq5 || this == espacoSeq6 || this == espacoSeq7){
+        if(this.childElementCount == 0){
+            if(vetorSaida[vetorSaida.length - 1].valor == 13){
+                inserir = true;
+            }
+           
+        }
+        else if(vetorEntrada[vetorEntrada.length - 1].valor == vetorSaida[vetorSaida.length - 1].valor + 1 && vetorEntrada[vetorEntrada.length - 1].cor != vetorSaida[vetorSaida.length - 1].cor){
+                inserir = true;       
+        }
+        
+        if(inserir){
+            cartaSegurada.style.top = `${0 + (this.childElementCount * 30)}px`;
         }   
-    }    
+    }
+    //Inserção de carta em fileiras de cima
+    else{
+        if(this.childElementCount == 0){
+            if(vetorSaida[vetorSaida.length - 1].valor == 1){
+                inserir = true;
+            }            
+        }
+        else if(vetorEntrada[vetorEntrada.length - 1].valor + 1 == vetorSaida[vetorSaida.length - 1].valor && vetorEntrada[vetorEntrada.length - 1].naipe == vetorSaida[vetorSaida.length - 1].naipe){
+            inserir = true;
+        }
+        if(inserir){
+            cartaSegurada.style.top = 0;
+        }
+    }
+    e.preventDefault();
+    console.log(inserir);
+    if(inserir){
+        //Inserção da carta no local selecionado
+        this.append(cartaSegurada);  
+        //Inserção e remoção nos vetores
+        vetorEntrada.push(vetorSaida.pop());
+
+        //Abertura de uma nova carta nas fileiras de baixo
+        if(localSaida == espacoSeq1 || localSaida == espacoSeq2 || localSaida == espacoSeq3 || localSaida == espacoSeq4 || localSaida == espacoSeq5 || localSaida == espacoSeq6 || localSaida == espacoSeq7){
+            let quantosFilhos = localSaida.childElementCount;
+            if(quantosFilhos > 0){
+                localSaida.removeChild(localSaida.childNodes[quantosFilhos - 1]); 
+                novaCarta(`imagens/${vetorSaida[vetorSaida.length-1].imagem}`,localSaida,30*(quantosFilhos - 1),true);
+            }   
+        }    
+    }
+    
 }
 
-function carta(valor, naipe, imagem){
+//Objeto carta
+function carta(valor, naipe, imagem,cor){
     this.valor = valor;
     this.naipe = naipe;
     this.imagem = imagem;
+    this.cor = cor;
 }
 
+//Vetores onde serão armazenados os objetos
 let baralho  = [];
 let cartasAvulsas = [];
 let seq1 = [];
@@ -108,62 +151,64 @@ let naipe2 = [];
 let naipe3 = [];
 let naipe4 = [];
 
-baralho.push(new carta('1','copas','ascopas.png'));
-baralho.push(new carta('2','copas','2copas.png'));
-baralho.push(new carta('3','copas','3copas.png'));
-baralho.push(new carta('4','copas','4copas.png'));
-baralho.push(new carta('5','copas','5copas.png'));
-baralho.push(new carta('6','copas','6copas.png'));
-baralho.push(new carta('7','copas','7copas.png'));
-baralho.push(new carta('8','copas','8copas.png'));
-baralho.push(new carta('9','copas','9copas.png'));
-baralho.push(new carta('10','copas','10copas.png'));
-baralho.push(new carta('11','copas','valetecopas.png'));
-baralho.push(new carta('12','copas','damacopas.png'));
-baralho.push(new carta('13','copas','reicopas.png'));
+//Inserção dos objetos no baralho
+baralho.push(new carta(1,'copas','ascopas.png','vermelho'));
+baralho.push(new carta(2,'copas','2copas.png','vermelho'));
+baralho.push(new carta(3,'copas','3copas.png','vermelho'));
+baralho.push(new carta(4,'copas','4copas.png','vermelho'));
+baralho.push(new carta(5,'copas','5copas.png','vermelho'));
+baralho.push(new carta(6,'copas','6copas.png','vermelho'));
+baralho.push(new carta(7,'copas','7copas.png','vermelho'));
+baralho.push(new carta(8,'copas','8copas.png','vermelho'));
+baralho.push(new carta(9,'copas','9copas.png','vermelho'));
+baralho.push(new carta(10,'copas','10copas.png','vermelho'));
+baralho.push(new carta(11,'copas','valetecopas.png','vermelho'));
+baralho.push(new carta(12,'copas','damacopas.png','vermelho'));
+baralho.push(new carta(13,'copas','reicopas.png','vermelho'));
 
-baralho.push(new carta('1','ouros','asouros.png'));
-baralho.push(new carta('2','ouros','2ouros.png'));
-baralho.push(new carta('3','ouros','3ouros.png'));
-baralho.push(new carta('4','ouros','4ouros.png'));
-baralho.push(new carta('5','ouros','5ouros.png'));
-baralho.push(new carta('6','ouros','6ouros.png'));
-baralho.push(new carta('7','ouros','7ouros.png'));
-baralho.push(new carta('8','ouros','8ouros.png'));
-baralho.push(new carta('9','ouros','9ouros.png'));
-baralho.push(new carta('10','ouros','10ouros.png'));
-baralho.push(new carta('11','ouros','valeteouros.png'));
-baralho.push(new carta('12','ouros','damaouros.png'));
-baralho.push(new carta('13','ouros','reiouros.png'));
+baralho.push(new carta(1,'ouros','asouros.png','vermelho'));
+baralho.push(new carta(2,'ouros','2ouros.png','vermelho'));
+baralho.push(new carta(3,'ouros','3ouros.png','vermelho'));
+baralho.push(new carta(4,'ouros','4ouros.png','vermelho'));
+baralho.push(new carta(5,'ouros','5ouros.png','vermelho'));
+baralho.push(new carta(6,'ouros','6ouros.png','vermelho'));
+baralho.push(new carta(7,'ouros','7ouros.png','vermelho'));
+baralho.push(new carta(8,'ouros','8ouros.png','vermelho'));
+baralho.push(new carta(9,'ouros','9ouros.png','vermelho'));
+baralho.push(new carta(10,'ouros','10ouros.png','vermelho'));
+baralho.push(new carta(11,'ouros','valeteouros.png','vermelho'));
+baralho.push(new carta(12,'ouros','damaouros.png','vermelho'));
+baralho.push(new carta(13,'ouros','reiouros.png','vermelho'));
 
-baralho.push(new carta('1','paus','aspaus.png'));
-baralho.push(new carta('2','paus','2paus.png'));
-baralho.push(new carta('3','paus','3paus.png'));
-baralho.push( new carta('4','paus','4paus.png'));
-baralho.push( new carta('5','paus','5paus.png'));
-baralho.push(new carta('6','paus','6paus.png'));
-baralho.push(new carta('7','paus','7paus.png'));
-baralho.push( new carta('8','paus','8paus.png'));
-baralho.push( new carta('9','paus','9paus.png'));
-baralho.push( new carta('10','paus','10paus.png'));
-baralho.push( new carta('11','paus','valetepaus.png'));
-baralho.push( new carta('12','paus','damapaus.png'));
-baralho.push( new carta('13','paus','reipaus.png'));
+baralho.push(new carta(1,'paus','aspaus.png','preto'));
+baralho.push(new carta(2,'paus','2paus.png','preto'));
+baralho.push(new carta(3,'paus','3paus.png','preto'));
+baralho.push( new carta(4,'paus','4paus.png','preto'));
+baralho.push( new carta(5,'paus','5paus.png','preto'));
+baralho.push(new carta(6,'paus','6paus.png','preto'));
+baralho.push(new carta(7,'paus','7paus.png','preto'));
+baralho.push( new carta(8,'paus','8paus.png','preto'));
+baralho.push( new carta(9,'paus','9paus.png','preto'));
+baralho.push( new carta(10,'paus','10paus.png','preto'));
+baralho.push( new carta(11,'paus','valetepaus.png','preto'));
+baralho.push( new carta(12,'paus','damapaus.png','preto'));
+baralho.push( new carta(13,'paus','reipaus.png','preto'));
 
-baralho.push(new carta('1','espadas','asespadas.png'));
-baralho.push(new carta('2','espadas','2espadas.png'));
-baralho.push(new carta('3','espadas','3espadas.png'));
-baralho.push( new carta('4','espadas','4espadas.png'));
-baralho.push( new carta('5','espadas','5espadas.png'));
-baralho.push(new carta('6','espadas','6espadas.png'));
-baralho.push(new carta('7','espadas','7espadas.png'));
-baralho.push( new carta('8','espadas','8espadas.png'));
-baralho.push( new carta('9','espadas','9espadas.png'));
-baralho.push( new carta('10','espadas','10espadas.png'));
-baralho.push( new carta('11','espadas','valeteespadas.png'));
-baralho.push( new carta('12','espadas','damaespadas.png'));
-baralho.push( new carta('13','espadas','reiespadas.png'));
+baralho.push(new carta(1,'espadas','asespadas.png','preto'));
+baralho.push(new carta(2,'espadas','2espadas.png','preto'));
+baralho.push(new carta(3,'espadas','3espadas.png','preto'));
+baralho.push( new carta(4,'espadas','4espadas.png','preto'));
+baralho.push( new carta(5,'espadas','5espadas.png','preto'));
+baralho.push(new carta(6,'espadas','6espadas.png','preto'));
+baralho.push(new carta(7,'espadas','7espadas.png','preto'));
+baralho.push( new carta(8,'espadas','8espadas.png','preto'));
+baralho.push( new carta(9,'espadas','9espadas.png','preto'));
+baralho.push( new carta(10,'espadas','10espadas.png','preto'));
+baralho.push( new carta(11,'espadas','valeteespadas.png','preto'));
+baralho.push( new carta(12,'espadas','damaespadas.png','preto'));
+baralho.push( new carta(13,'espadas','reiespadas.png','preto'));
 
+//Função de embaralhar
 function embaralhar(baralho) {
     let qtdCartas = baralho.length, aux, novaCarta;
   
@@ -176,6 +221,7 @@ function embaralhar(baralho) {
   
 }
 
+//Função de distribuir as cartas entre as fileiras
 function distribuir(baralho){
     for(let i = 0; i < 7; i++){
         let cartaDist;
@@ -249,6 +295,7 @@ function distribuir(baralho){
     
 }
 
+//Criação de elemento de nova carta
 function novaCarta(src,posicao, top,draggable){
     let novaCartaAberta = document.createElement('img');
     novaCartaAberta.style.position  ='absolute';
@@ -259,6 +306,7 @@ function novaCarta(src,posicao, top,draggable){
     posicao.appendChild(novaCartaAberta);
 }
 
+//Função para identificar o vetor de onde a carta foi arrastada
 function deOndeArrastou(src){
     let dividir = src.split('/');
     for(let i in cartasAvulsas){
@@ -326,6 +374,7 @@ function deOndeArrastou(src){
 embaralhar(baralho);
 distribuir(baralho);
 
+//Gera uma nova carta ao clicar no baralho
 figuraBaralho.addEventListener('click',function(){
     novaCarta(`imagens/${baralho[0].imagem}`,cartaAberta, 0,true);
     cartasAvulsas.push(baralho.shift());
