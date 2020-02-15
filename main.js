@@ -22,6 +22,8 @@ let cartaSegurada;
 let vetorSaida; //Vetor de onde saiu a carta
 let vetorEntrada; //Vetor pra onde vai a carta
 let localSaida; //Local Html de onde saiu a carta
+let posVetorSaida; //Posição no vetor da carta arrastada
+let numCartasArrastadas; //Número de cartas arrastadas
 
 //Todos os lugares onde é possível soltar uma carta
 for(const espaco of espacos){
@@ -44,6 +46,7 @@ function dragOver(e){
 //Soltar a carta
 function dragDrop(e){
     let inserir = false;
+    numCartasArrastadas = vetorSaida.length - posVetorSaida;
     //Verifica qual o vetor relacionado ao local onde a carta foi solta
     if(this == espacoSeq1){
         vetorEntrada = seq1;
@@ -78,7 +81,6 @@ function dragDrop(e){
     else{
         vetorEntrada = naipe4;
     }
-
     //Inserção de carta em fileiras de baixo
     if(this == espacoSeq1 || this == espacoSeq2 || this == espacoSeq3 || this == espacoSeq4 || this == espacoSeq5 || this == espacoSeq6 || this == espacoSeq7){
         if(this.childElementCount == 0){
@@ -87,7 +89,7 @@ function dragDrop(e){
             }
            
         }
-        else if(vetorEntrada[vetorEntrada.length - 1].valor == vetorSaida[vetorSaida.length - 1].valor + 1 && vetorEntrada[vetorEntrada.length - 1].cor != vetorSaida[vetorSaida.length - 1].cor){
+        else if(vetorEntrada[vetorEntrada.length - 1].valor == vetorSaida[posVetorSaida].valor + 1 && vetorEntrada[vetorEntrada.length - 1].cor != vetorSaida[posVetorSaida].cor){
                 inserir = true;       
         }
         
@@ -110,13 +112,34 @@ function dragDrop(e){
         }
     }
     e.preventDefault();
-    console.log(inserir);
     if(inserir){
         //Inserção da carta no local selecionado
-        this.append(cartaSegurada);  
-        //Inserção e remoção nos vetores
-        vetorEntrada.push(vetorSaida.pop());
-
+        
+        if(localSaida.id == 'carta-aberta' || localSaida.id == 'naipe1' || localSaida.id == 'naipe2' || localSaida.id == 'naipe3'|| localSaida.id == 'naipe4'){
+            vetorEntrada.push(vetorSaida.pop());
+            this.append(cartaSegurada);
+        }
+        else{
+            let copiaVetorSaida = vetorSaida.map((x)=>x);
+            let novosElementos = copiaVetorSaida.splice(posVetorSaida,copiaVetorSaida.length-posVetorSaida);
+            while(numCartasArrastadas > 0){
+                this.append(cartaSegurada);
+                cartaSegurada = localSaida.childNodes[posVetorSaida];
+                numCartasArrastadas--;
+                
+                if(cartaSegurada != null){
+                    if(cartaSegurada.tagName == 'IMG'){
+                        console.log('aqui');
+                        cartaSegurada.style.top = `${30*this.childNodes.length}px`;
+                    }
+                }
+                    
+                vetorEntrada.push(novosElementos.shift());
+                vetorSaida.pop();
+               
+            }
+            console.log(this);
+        }
         //Abertura de uma nova carta nas fileiras de baixo
         if(localSaida == espacoSeq1 || localSaida == espacoSeq2 || localSaida == espacoSeq3 || localSaida == espacoSeq4 || localSaida == espacoSeq5 || localSaida == espacoSeq6 || localSaida == espacoSeq7){
             let quantosFilhos = localSaida.childElementCount;
@@ -124,7 +147,7 @@ function dragDrop(e){
                 localSaida.removeChild(localSaida.childNodes[quantosFilhos - 1]); 
                 novaCarta(`imagens/${vetorSaida[vetorSaida.length-1].imagem}`,localSaida,30*(quantosFilhos - 1),true);
             }   
-        }    
+        }        
     }
     
 }
@@ -312,61 +335,73 @@ function deOndeArrastou(src){
     let dividir = src.split('/');
     for(let i in cartasAvulsas){
         if(cartasAvulsas[i].imagem == dividir[dividir.length-1]){
+            posVetorSaida = i;
             return cartasAvulsas;
         }
     }
     for(let i in seq1){
         if(seq1[i].imagem == dividir[dividir.length-1]){
+            posVetorSaida = i;
             return seq1;
         }
     }
     for(let i in seq2){
         if(seq2[i].imagem == dividir[dividir.length-1]){
+            posVetorSaida = i;
             return seq2;
         }
     }
     for(let i in seq3){
         if(seq3[i].imagem == dividir[dividir.length-1]){
+            posVetorSaida = i;
             return seq3;
         }
     }
     for(let i in seq4){
         if(seq4[i].imagem == dividir[dividir.length-1]){
+            posVetorSaida = i;
             return seq4;
         }
     }
     for(let i in seq5){
         if(seq5[i].imagem == dividir[dividir.length-1]){
+            posVetorSaida = i;
             return seq5;
         }
     }
     for(let i in seq6){
         if(seq6[i].imagem == dividir[dividir.length-1]){
+            posVetorSaida = i;
             return seq6;
         }
     }
     for(let i in seq7){
         if(seq7[i].imagem == dividir[dividir.length-1]){
+            posVetorSaida = i;
             return seq7;
         }
     }
     for(let i in naipe1){
         if(naipe1[i].imagem == dividir[dividir.length-1]){
+            posVetorSaida = i;
             return naipe1;
         }
     }
     for(let i in naipe2){
         if(naipe2[i].imagem == dividir[dividir.length-1]){
+            posVetorSaida = i;
             return naipe2;
         }
     }
     for(let i in naipe3){
         if(naipe3[i].imagem == dividir[dividir.length-1]){
+            posVetorSaida = i;
             return naipe3;
         }
     }
     for(let i in naipe4){
         if(naipe4[i].imagem == dividir[dividir.length-1]){
+            posVetorSaida = i;
             return naipe4;
         }
     }
