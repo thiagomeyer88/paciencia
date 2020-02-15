@@ -3,6 +3,7 @@
 //Elementos HTML
 const espacos = document.querySelectorAll('.espaco');
 const figuraBaralho = document.querySelector('#baralho');
+const espacoBaralho = document.querySelector('#espacoBaralho');
 const cartaAberta = document.querySelector('#carta-aberta');
 const espacoSeq1 = document.getElementById('sequencia1');
 const espacoSeq2 = document.getElementById('sequencia2');
@@ -375,9 +376,25 @@ embaralhar(baralho);
 distribuir(baralho);
 
 //Gera uma nova carta ao clicar no baralho
-figuraBaralho.addEventListener('click',function(){
-    novaCarta(`imagens/${baralho[0].imagem}`,cartaAberta, 0,true);
-    cartasAvulsas.push(baralho.shift());
+espacoBaralho.addEventListener('click',function(){
+    if(baralho.length == 0){
+        let cont = cartasAvulsas.length;
+        console.log(cartasAvulsas);
+        while(cont > 0){
+            baralho.unshift(cartasAvulsas.pop())
+            cont--;
+            figuraBaralho.style.visibility = 'visible';
+            cartaAberta.removeChild(cartaAberta.childNodes[0]);
+        }
+    }
+    else{
+        novaCarta(`imagens/${baralho[0].imagem}`,cartaAberta, 0,true);
+        cartasAvulsas.push(baralho.shift());
+        if(baralho.length == 0){
+            figuraBaralho.style.visibility = 'hidden';
+        }
+    }
+    
 });
 
 
