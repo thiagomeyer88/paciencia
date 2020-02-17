@@ -3,30 +3,35 @@
     padding:0;
 }
 
+
 body{
-    background-color: seashell;
+    background: linear-gradient(45deg,rgb(1, 216, 1),rgb(0, 68, 0));
+    height: 1200px;
+    font-family: arial;
 }
 
 div.container{
-    background: linear-gradient(45deg,rgb(1, 216, 1),rgb(0, 68, 0));
-    border: 5px solid burlywood;
-    border-radius: 5px;
+    box-sizing: border-box;
     display: grid;
-    max-width: 1000px;
     margin: 0 auto;
+    padding: 25px;
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
     grid-template-rows: 1fr 1fr;
     grid-template-areas: "baralho carta-aberta nada naipe1 naipe2 naipe3 naipe4"
                        "sequencia1  sequencia2 sequencia3 sequencia4 sequencia5 sequencia6 sequencia7";
-    padding: 80px 80px 150px;
+    
 }
 
 div.container div{
-    margin-bottom: 50px;
+    margin-bottom: 20px;
     background-color: red;
     height: 170px;
     width: 115px;
     border: 5px solid black;
+}
+
+img:hover{
+    box-shadow: 0 0 1em gold;
 }
 
 #baralho{
@@ -88,4 +93,38 @@ img{
 
 .espaco,.carta-aberta{
     position: relative;
+}
+
+.containerBotao{
+    display: flex;
+    justify-content: center;
+    margin: 20px 0 0;
+}
+
+.botao{
+    padding: 5px 10px;
+    color: white;
+    background: red;
+    border-radius: 5px;
+    text-transform: uppercase;
+    font-size: 1em;
+    font-weight: bold;
+    border: 1px solid black;
+}
+
+.botao:hover{
+    color: red;
+    background-color: white;
+    cursor: pointer;
+}
+
+@media(max-width: 800px){
+    div.container div{
+        height: 60px;
+        width: 45px;
+    }
+    img{
+        height: 60px;
+        width: 45px; 
+    }
 }

@@ -16,6 +16,7 @@ const espacoNaipe1 = document.getElementById('naipe1');
 const espacoNaipe2 = document.getElementById('naipe2');
 const espacoNaipe3 = document.getElementById('naipe3');
 const espacoNaipe4 = document.getElementById('naipe4');
+const botaoNovoJogo = document.getElementById('botaoNovoJogo');
 
 //Variáveis Globais
 let cartaSegurada;
@@ -84,7 +85,7 @@ function dragDrop(e){
     //Inserção de carta em fileiras de baixo
     if(this == espacoSeq1 || this == espacoSeq2 || this == espacoSeq3 || this == espacoSeq4 || this == espacoSeq5 || this == espacoSeq6 || this == espacoSeq7){
         if(this.childElementCount == 0){
-            if(vetorSaida[vetorSaida.length - 1].valor == 13){
+            if(vetorSaida[posVetorSaida].valor == 13){
                 inserir = true;
             }
            
@@ -129,7 +130,6 @@ function dragDrop(e){
                 
                 if(cartaSegurada != null){
                     if(cartaSegurada.tagName == 'IMG'){
-                        console.log('aqui');
                         cartaSegurada.style.top = `${30*this.childNodes.length}px`;
                     }
                 }
@@ -138,7 +138,11 @@ function dragDrop(e){
                 vetorSaida.pop();
                
             }
-            console.log(this);
+        //Verifica se é fim de jogo
+        if(naipe1.length == 13 && naipe2.length == 13 && naipe3.length == 13 && naipe4.length == 13){
+            fimDeJogo();
+        }    
+            
         }
         //Abertura de uma nova carta nas fileiras de baixo
         if(localSaida == espacoSeq1 || localSaida == espacoSeq2 || localSaida == espacoSeq3 || localSaida == espacoSeq4 || localSaida == espacoSeq5 || localSaida == espacoSeq6 || localSaida == espacoSeq7){
@@ -407,6 +411,20 @@ function deOndeArrastou(src){
     }
 }
 
+//Função de fim de jogo
+function fimDeJogo(){
+    alert('Parabéns! Você venceu!🥳🥳🥳')
+    location.reload();
+}
+
+//Função para iniciar um novo jogo
+function novoJogo(){
+    let resposta  = confirm('Deseja começar um novo jogo?');
+    if(resposta){
+        location.reload();
+    }
+}
+
 embaralhar(baralho);
 distribuir(baralho);
 
@@ -414,7 +432,7 @@ distribuir(baralho);
 espacoBaralho.addEventListener('click',function(){
     if(baralho.length == 0){
         let cont = cartasAvulsas.length;
-        console.log(cartasAvulsas);
+        
         while(cont > 0){
             baralho.unshift(cartasAvulsas.pop())
             cont--;
@@ -431,6 +449,8 @@ espacoBaralho.addEventListener('click',function(){
     }
     
 });
+
+botaoNovoJogo.onclick = novoJogo;
 
 
 
